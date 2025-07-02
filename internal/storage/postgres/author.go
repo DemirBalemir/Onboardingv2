@@ -32,10 +32,9 @@ func (a *Author) FindByID(ctx context.Context, id int) (*entities.Author, error)
 	`
 	author := &entities.Author{}
 	err := a.db.QueryRow(ctx, query, id).Scan(
-
 		&author.ID,
-		&author.Bio,
 		&author.Name,
+		&author.Bio,
 		&author.BirthDate,
 	)
 	if err != nil {

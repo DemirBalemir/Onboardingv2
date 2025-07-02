@@ -115,7 +115,7 @@ func (b *Book) Create(ctx context.Context, book *entities.Book) error {
 	`
 	err := b.db.QueryRow(ctx, query, book.Title, book.Description, book.PublishedAt, book.AuthorID, book.Price).Scan(&book.ID)
 	if err != nil {
-		return fmt.Errorf("failed to create author: %w", err)
+		return fmt.Errorf("failed to create book: %w", err)
 	}
 
 	return nil

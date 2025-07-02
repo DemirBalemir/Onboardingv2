@@ -50,7 +50,16 @@ func (s *BookService) RemoveBook(ctx context.Context, id int) error {
 //
 // SearchGoogleBooks fetches a list of books from Google Books API by title
 func (s *BookService) SearchGoogleBooks(ctx context.Context, title string) ([]entities.GoogleBook, error) {
-	url := fmt.Sprintf("https://www.googleapis.com/books/v1/volumes?q=%s", title)
+	baseURL := "https://www.googleapis.com/books/v1/volumes"
+
+	// Allow override in tests via context
+	if customBaseURL := ctx.Value("baseURLKey"); customBaseURL != nil {
+		if str, ok := customBaseURL.(string); ok {
+			baseURL = str
+		}
+	}
+
+	url := fmt.Sprintf("%s?q=%s", baseURL, title)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {

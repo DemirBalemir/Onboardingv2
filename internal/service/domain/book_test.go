@@ -11,6 +11,10 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+type contextKey string
+
+const baseURLKey contextKey = "baseURL"
+
 // Dummy repo that does nothing (we're testing API logic only)
 type mockBookRepo struct{}
 
@@ -43,9 +47,13 @@ func TestSearchGoogleBooks(t *testing.T) {
 		client: server.Client(), // Inject mock HTTP client
 	}
 
-	results, err := svc.SearchGoogleBooks(context.Background(), "harry potter")
+	results, err := svc.SearchGoogleBooks(
+		context.WithValue(context.Background(), baseURLKey, server.URL),
+		"harry potter",
+	)
 	assert.NoError(t, err)
 	assert.Len(t, results, 1)
+	assert.GreaterOrEqual(t, len(results), 1)
 	assert.Equal(t, "abc123", results[0].ID)
 	assert.Equal(t, "Harry Potter and the Sorcerer's Stone", results[0].VolumeInfo.Title)
 	assert.Equal(t, "J.K. Rowling", results[0].VolumeInfo.Authors[0])

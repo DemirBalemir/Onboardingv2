@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/demirbalemir/hop/Onboardingv2/internal/entities"
@@ -64,9 +65,16 @@ func (s *BookService) SearchGoogleBooks(ctx context.Context, title string) ([]en
 		}
 	}
 
-	url := fmt.Sprintf("%s?q=%s", baseURL, title)
+	// Build URL with proper query escaping
+	u, err := url.Parse(baseURL)
+	if err != nil {
+		return nil, fmt.Errorf("invalid base url: %w", err)
+	}
+	q := u.Query()
+	q.Set("q", title)
+	u.RawQuery = q.Encode()
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}

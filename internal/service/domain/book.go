@@ -15,6 +15,11 @@ type BookService struct {
 	repo   storage.BookRepository
 	client *http.Client
 }
+
+type contextKey string
+
+const baseURLKey contextKey = "baseURL"
+
 type GoogleBooksSearchResponse struct {
 	Items []entities.GoogleBook `json:"items"`
 }
@@ -53,7 +58,7 @@ func (s *BookService) SearchGoogleBooks(ctx context.Context, title string) ([]en
 	baseURL := "https://www.googleapis.com/books/v1/volumes"
 
 	// Allow override in tests via context
-	if customBaseURL := ctx.Value("baseURLKey"); customBaseURL != nil {
+	if customBaseURL := ctx.Value(baseURLKey); customBaseURL != nil {
 		if str, ok := customBaseURL.(string); ok {
 			baseURL = str
 		}

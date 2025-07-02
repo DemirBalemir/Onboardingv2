@@ -11,10 +11,6 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type contextKey string
-
-const baseURLKey contextKey = "baseURL"
-
 // Dummy repo that does nothing (we're testing API logic only)
 type mockBookRepo struct{}
 

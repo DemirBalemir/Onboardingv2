@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/demirbalemir/hop/Onboardingv2/internal/entities"
@@ -16,9 +17,9 @@ type BookService struct {
 	client *http.Client
 }
 
-type contextKey string
+type ctxKey string
 
-const baseURLKey contextKey = "baseURL"
+const baseURLKey ctxKey = "baseURL"
 
 type GoogleBooksSearchResponse struct {
 	Items []entities.GoogleBook `json:"items"`
@@ -57,14 +58,14 @@ func (s *BookService) RemoveBook(ctx context.Context, id int) error {
 func (s *BookService) SearchGoogleBooks(ctx context.Context, title string) ([]entities.GoogleBook, error) {
 	baseURL := "https://www.googleapis.com/books/v1/volumes"
 
-	// Allow override in tests via context
-	if customBaseURL := ctx.Value(baseURLKey); customBaseURL != nil {
-		if str, ok := customBaseURL.(string); ok {
+	// Allow test to override base URL via context
+	if custom := ctx.Value(baseURLKey); custom != nil {
+		if str, ok := custom.(string); ok {
 			baseURL = str
 		}
 	}
 
-	url := fmt.Sprintf("%s?q=%s", baseURL, title)
+	url := fmt.Sprintf("%s?q=%s", baseURL, url.QueryEscape(title))
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {

@@ -33,20 +33,22 @@ func TestSearchGoogleBooks(t *testing.T) {
     }`
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Optional: Debug log
+		// fmt.Println("Request received on mock server:", r.URL.String())
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(fakeResponse))
 	}))
+
 	defer server.Close()
 
 	svc := &BookService{
 		repo:   &mockBookRepo{},
 		client: server.Client(), // Inject mock HTTP client
 	}
+	ctx := context.WithValue(context.Background(), baseURLKey, server.URL)
 
-	results, err := svc.SearchGoogleBooks(
-		context.WithValue(context.Background(), baseURLKey, server.URL),
-		"harry potter",
-	)
+	results, err := svc.SearchGoogleBooks(ctx, "harry potter")
+
 	assert.NoError(t, err)
 	assert.Len(t, results, 1)
 	assert.GreaterOrEqual(t, len(results), 1)

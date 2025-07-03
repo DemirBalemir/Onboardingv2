@@ -1,5 +1,4 @@
 // internal/storage/postgres/storage.go
-// why do ı need this file
 package postgres
 
 import (

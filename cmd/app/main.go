@@ -4,15 +4,17 @@ import (
 	"log"
 	"os"
 
-	"github.com/demirbalemir/hop/Onboardingv2/internal/db"
 	"github.com/joho/godotenv"
-	//"github.com/demirbalemir/hop/Onboardingv2/internal/storage/postgres"
+
+	"github.com/demirbalemir/hop/Onboardingv2/internal/db"
+	server "github.com/demirbalemir/hop/Onboardingv2/internal/server/http/handler"
+	"github.com/demirbalemir/hop/Onboardingv2/internal/service/domain"
+	"github.com/demirbalemir/hop/Onboardingv2/internal/storage/postgres"
 )
 
 func main() {
 	// Load .env
-	err := godotenv.Load()
-	if err != nil {
+	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
@@ -26,11 +28,12 @@ func main() {
 	defer dbPool.Close()
 
 	// Initialize Repositories
-	//repo := postgres.NewRepository(dbPool)
+	repo := postgres.NewRepository(dbPool)
 
-	log.Println("Application setup complete")
+	// Initialize Services
+	authorService := domain.NewAuthorService(repo.Author, repo.Book)
+	bookService := domain.NewBookService(repo.Book)
 
-	// Example placeholder
-	// server := server.New(repo)
-	// server.Run()
+	// Start HTTP Server
+	server.StartServer(authorService, bookService)
 }

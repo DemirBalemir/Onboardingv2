@@ -3,6 +3,7 @@ module github.com/demirbalemir/hop/Onboardingv2
 go 1.24.4
 
 require (
+	github.com/go-chi/chi/v5 v5.2.2
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/joho/godotenv v1.5.1
 	github.com/pashagolub/pgxmock/v3 v3.4.0

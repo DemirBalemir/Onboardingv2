@@ -11,6 +11,12 @@ type AuthorService struct {
 	repo     storage.AuthorRepository
 	bookRepo storage.BookRepository
 }
+type AuthorServiceInterface interface {
+	RegisterAuthor(ctx context.Context, author *entities.Author) error
+	GetAuthorByID(ctx context.Context, id int) (*entities.Author, error)
+}
+
+var _ AuthorServiceInterface = (*AuthorService)(nil)
 
 func NewAuthorService(authorRepo storage.AuthorRepository, bookRepo storage.BookRepository) *AuthorService {
 	return &AuthorService{

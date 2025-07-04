@@ -25,6 +25,15 @@ type GoogleBooksSearchResponse struct {
 	Items []entities.GoogleBook `json:"items"`
 }
 
+type BookServiceInterface interface {
+	GetAllBooks(ctx context.Context) ([]*entities.Book, error)
+	GetBookByID(ctx context.Context, id int) (*entities.Book, error)
+	AddBook(ctx context.Context, book *entities.Book) error
+	UpdateBook(ctx context.Context, book *entities.Book) error
+	RemoveBook(ctx context.Context, id int) error
+	SearchGoogleBooks(ctx context.Context, title string) ([]entities.GoogleBook, error)
+}
+
 func NewBookService(repo storage.BookRepository) *BookService {
 	return &BookService{
 		repo:   repo,

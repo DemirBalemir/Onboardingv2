@@ -6,15 +6,15 @@ import (
 	"strconv"
 
 	"github.com/demirbalemir/hop/Onboardingv2/internal/entities"
-	"github.com/demirbalemir/hop/Onboardingv2/internal/service/domain"
+	"github.com/demirbalemir/hop/Onboardingv2/internal/service"
 	"github.com/go-chi/chi/v5"
 )
 
 type Handler struct {
-	AuthorService domain.AuthorServiceInterface
+	AuthorService service.AuthorService
 }
 
-func NewHandler(authorService domain.AuthorServiceInterface) *Handler {
+func NewHandler(authorService service.AuthorService) *Handler {
 	return &Handler{AuthorService: authorService}
 }
 
